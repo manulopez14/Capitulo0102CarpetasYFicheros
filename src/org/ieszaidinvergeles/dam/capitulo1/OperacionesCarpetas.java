@@ -67,7 +67,28 @@ public class OperacionesCarpetas {
      * @param ruta de la carpeta a borrar
      */
     public static void borrarDirectorio(String ruta) {
+        Path rootPath = Paths.get(ruta);
+
+        try {
+          Files.walkFileTree(rootPath, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+              System.out.println("delete file: " + file.toString());
+              Files.delete(file);
+              return FileVisitResult.CONTINUE;
+            }
         
+            @Override
+            public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+              Files.delete(dir);
+              System.out.println("delete dir: " + dir.toString());
+              return FileVisitResult.CONTINUE;
+            }
+          });
+        } catch(IOException e){
+          System.err.println("Error: "+e.getMessage());
+        }
+
     }
 
 }
